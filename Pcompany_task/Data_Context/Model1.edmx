@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Pcompany_taskModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Product_table">
+          <Key>
+            <PropertyRef Name="Product_id" />
+          </Key>
+          <Property Name="Product_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Category_id" Type="int" />
+          <Property Name="Product_name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" />
+        </EntityType>
+        <Association Name="FK_Product_table_Category">
+          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="Product_table" Type="Self.Product_table" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Product_table">
+              <PropertyRef Name="Category_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="sp_category_report" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_product_report" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="Pcompany_taskModelStoreContainer">
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product_table" EntityType="Self.Product_table" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Product_table_Category" Association="Self.FK_Product_table_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="Product_table" EntitySet="Product_table" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Pcompany_taskModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Product_table">
+          <Key>
+            <PropertyRef Name="Product_id" />
+          </Key>
+          <Property Name="Product_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Category_id" Type="Int32" />
+          <Property Name="Product_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
+          <NavigationProperty Name="Category" Relationship="Pcompany_taskModel.FK_Product_table_Category" FromRole="Product_table" ToRole="Category" />
+        </EntityType>
+        <EntityContainer Name="Pcompany_taskEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Product_table" EntityType="Self.Product_table" />
+          <FunctionImport Name="sp_category_report" ReturnType="Collection(Pcompany_taskModel.sp_category_report_Result)" />
+          <FunctionImport Name="sp_product_report" ReturnType="Collection(Pcompany_taskModel.sp_product_report_Result)" />
+          <EntitySet Name="Categories" EntityType="Pcompany_taskModel.Category" />
+          <AssociationSet Name="FK_Product_table_Category" Association="Pcompany_taskModel.FK_Product_table_Category">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Product_table" EntitySet="Product_table" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="sp_category_report_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Category" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="sp_product_report_Result">
+          <Property Type="Int32" Name="Product_id" Nullable="false" />
+          <Property Type="String" Name="Product_name" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="Category_id" Nullable="true" />
+          <Property Type="String" Name="Category_name" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Category1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Product_table" Relationship="Pcompany_taskModel.FK_Product_table_Category" FromRole="Category" ToRole="Product_table" />
+        </EntityType>
+        <Association Name="FK_Product_table_Category">
+          <End Type="Pcompany_taskModel.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="Pcompany_taskModel.Product_table" Role="Product_table" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Product_table">
+              <PropertyRef Name="Category_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Pcompany_taskModelStoreContainer" CdmEntityContainer="Pcompany_taskEntities">
+          <EntitySetMapping Name="Product_table">
+            <EntityTypeMapping TypeName="Pcompany_taskModel.Product_table">
+              <MappingFragment StoreEntitySet="Product_table">
+                <ScalarProperty Name="Product_id" ColumnName="Product_id" />
+                <ScalarProperty Name="Category_id" ColumnName="Category_id" />
+                <ScalarProperty Name="Product_name" ColumnName="Product_name" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_category_report" FunctionName="Pcompany_taskModel.Store.sp_category_report">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Pcompany_taskModel.sp_category_report_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_product_report" FunctionName="Pcompany_taskModel.Store.sp_product_report">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Pcompany_taskModel.sp_product_report_Result">
+                <ScalarProperty Name="Product_id" ColumnName="Product_id" />
+                <ScalarProperty Name="Product_name" ColumnName="Product_name" />
+                <ScalarProperty Name="Category_id" ColumnName="Category_id" />
+                <ScalarProperty Name="Category_name" ColumnName="Category_name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="Pcompany_taskModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="Category1" ColumnName="Category" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
